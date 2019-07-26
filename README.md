@@ -12,8 +12,8 @@ bleidd CMS is a fast and modular CMS, based on Symfony 4 framework.
 
 ### Installation ###
 - composer install
-- rename .env.sample into .env
-- configure application (e.g. database connection) in .env file
+- rename `.env.sample` into `.env`
+- configure application (e.g. database connection) in `.env` file
 
 vhost should be pointed to /public directory
 
@@ -23,4 +23,4 @@ vhost should be pointed to /public directory
 
 ### Development status ###
 
-bleid CMS is currently under development in very early version.
+bleidd CMS is currently under development in very early version.
