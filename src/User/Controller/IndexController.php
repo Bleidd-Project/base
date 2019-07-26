@@ -19,9 +19,6 @@ class IndexController extends Controller
      */
     private $twig;
 
-    /** @var Test */
-    private $test;
-
     /** @var UserService */
     private $service;
 
@@ -32,10 +29,9 @@ class IndexController extends Controller
      * @param Test              $test
      * @param UserService       $service
      */
-    public function __construct(\Twig_Environment $twig, Test $test, UserService $service)
+    public function __construct(\Twig_Environment $twig, UserService $service)
     {
         $this->twig = $twig;
-        $this->test = $test;
         $this->service = $service;
     }
 
@@ -45,12 +41,8 @@ class IndexController extends Controller
     public function index()
     {
         $html = $this->twig->render('@user/index.html.twig', [
-            'text' => $this->test->test(),
+            'text' => $this->service->test(),
         ]);
-        
-        echo '<pre>';
-        print_r($this->service->test());
-        echo '</pre>'; die('');
 
         return new Response($html);
     }

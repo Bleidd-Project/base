@@ -133,10 +133,23 @@ final class Kernel extends BaseKernel
                     $doctrineMappings = array_merge($doctrineMappings ?? [], $mappings);
                 }
             }
+            if (file_exists($translationPath = $path . '/Resources/config/translation.yaml')) {
+                $translationConfig = Yaml::parseFile($translationPath);
+
+                if ($paths = ($translationConfig['framework']['translator']['paths'] ?? [])) {
+                    $translationPaths = array_merge($translationPaths ?? [], $paths);
+                }
+            }
         }
 
         ($twigPaths ?? false) && $container->loadFromExtension('twig', [
             'paths' => $twigPaths,
+        ]);
+        
+        ($translationPaths ?? false) && $container->loadFromExtension('framework', [
+            'translator' => [
+                'paths' => $translationPaths,
+            ],
         ]);
 
         ($doctrineMappings ?? false) && $container->loadFromExtension('doctrine', [

@@ -5,4 +5,4 @@ services:
 
     App\User\Service\Test:
         arguments:
-            $message: 'test!'
+            $message: 'user_key_translate'
