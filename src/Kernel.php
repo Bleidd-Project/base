@@ -74,23 +74,7 @@ final class Kernel extends BaseKernel
         $loader->load($confDir.'/{services}'.self::CONFIG_EXTS, 'glob');
         $loader->load($confDir.'/{services}_'.$this->environment.self::CONFIG_EXTS, 'glob');
 
-        foreach ($this->modulesConfig() as $name => $config) {
-            if (is_dir($servicesPath = ($path = $config['path']) . '/Resources/config')) {
-                $loader->import($servicesPath . '/{services}' . self::CONFIG_EXTS, 'glob');
-            }
-
-            if (file_exists($twigPath = $path . '/Resources/config/twig.yaml')) {
-                $twigConfig = Yaml::parseFile($twigPath);
-
-                if ($paths = ($twigConfig['twig']['paths'] ?? [])) {
-                    $twigPaths = array_merge($twigPaths ?? [], $paths);
-                }
-            }
-        }
-
-        $container->loadFromExtension('twig', [
-            'paths' => $twigPaths ?? [],
-        ]);
+        $this->configureContainerForModules($container, $loader);
     }
 
     /**
@@ -106,6 +90,15 @@ final class Kernel extends BaseKernel
         $routes->import($confDir.'/{routes}/*'.self::CONFIG_EXTS, '/', 'glob');
         $routes->import($confDir.'/{routes}'.self::CONFIG_EXTS, '/', 'glob');
 
+        $this->configureRoutesForModules($routes);
+    }
+
+    /**
+     * @param RouteCollectionBuilder $routes
+     * @throws \Symfony\Component\Config\Exception\LoaderLoadException
+     */
+    private function configureRoutesForModules(RouteCollectionBuilder $routes)
+    {
         foreach ($this->modulesConfig() as $name => $config) {
             $annotationsPath = $config['path'] . '/Resources/config/routes/';
 
@@ -113,6 +106,44 @@ final class Kernel extends BaseKernel
                 $routes->import($annotationsPath . '/*', '/', 'glob');
             }
         }
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param LoaderInterface  $loader
+     */
+    private function configureContainerForModules(ContainerBuilder $container, LoaderInterface $loader)
+    {
+        foreach ($this->modulesConfig() as $name => $config) {
+            if (is_dir($servicesPath = ($path = $config['path']) . '/Resources/config')) {
+                $loader->import($servicesPath . '/{services}' . self::CONFIG_EXTS, 'glob');
+            }
+
+            if (file_exists($twigPath = $path . '/Resources/config/twig.yaml')) {
+                $twigConfig = Yaml::parseFile($twigPath);
+
+                if ($paths = ($twigConfig['twig']['paths'] ?? [])) {
+                    $twigPaths = array_merge($twigPaths ?? [], $paths);
+                }
+            }
+            if (file_exists($doctrinePath = $path . '/Resources/config/doctrine.yaml')) {
+                $doctrineConfig = Yaml::parseFile($doctrinePath);
+
+                if ($mappings = ($doctrineConfig['doctrine']['orm']['mappings'] ?? [])) {
+                    $doctrineMappings = array_merge($doctrineMappings ?? [], $mappings);
+                }
+            }
+        }
+
+        ($twigPaths ?? false) && $container->loadFromExtension('twig', [
+            'paths' => $twigPaths,
+        ]);
+
+        ($doctrineMappings ?? false) && $container->loadFromExtension('doctrine', [
+            'orm' => [
+                'mappings' => $doctrineMappings,
+            ],
+        ]);
     }
 
     /**

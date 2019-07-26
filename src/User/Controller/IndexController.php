@@ -3,6 +3,7 @@
 namespace App\User\Controller;
 
 use App\User\Service\Test;
+use App\User\Service\UserService;
 use App\Base\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,16 +22,21 @@ class IndexController extends Controller
     /** @var Test */
     private $test;
 
+    /** @var UserService */
+    private $service;
+
     /**
      * IndexController constructor.
      *
      * @param \Twig_Environment $twig
      * @param Test              $test
+     * @param UserService       $service
      */
-    public function __construct(\Twig_Environment $twig, Test $test)
+    public function __construct(\Twig_Environment $twig, Test $test, UserService $service)
     {
         $this->twig = $twig;
         $this->test = $test;
+        $this->service = $service;
     }
 
     /**
@@ -41,6 +47,10 @@ class IndexController extends Controller
         $html = $this->twig->render('@user/index.html.twig', [
             'text' => $this->test->test(),
         ]);
+        
+        echo '<pre>';
+        print_r($this->service->test());
+        echo '</pre>'; die('');
 
         return new Response($html);
     }
