@@ -1,0 +1,3 @@
+User:
+    path: '%kernel.project_dir%/src/User'
+    enabled: true

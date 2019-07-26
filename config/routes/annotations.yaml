@@ -1,0 +1,7 @@
+front:
+    resource: ../../src/Page/Controller/
+    type: annotation
+
+admin:
+    resource: ../../src/Admin/Controller/
+    type: annotation

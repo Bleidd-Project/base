@@ -1,0 +1,3 @@
+user:
+    resource: ../../../Controller/
+    type: annotation

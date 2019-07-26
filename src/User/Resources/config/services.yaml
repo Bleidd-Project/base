@@ -1,0 +1,8 @@
+services:
+#    App\User\Controller\:
+#        resource: '../src/User/Controller'
+#        tags: ['controller.service_arguments']
+
+    App\User\Service\Test:
+        arguments:
+            $message: 'test!'
