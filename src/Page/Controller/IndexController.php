@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Page\Controller;
 
 use App\Base\Controller\Controller;
@@ -11,12 +10,14 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class IndexController extends Controller
 {
-
     /**
      * @var \Twig_Environment
      */
     private $twig;
 
+    /**
+     * @param \Twig_Environment $twig
+     */
     public function __construct(\Twig_Environment $twig)
     {
         $this->twig = $twig;
@@ -31,5 +32,4 @@ class IndexController extends Controller
 
         return new Response($html);
     }
-
 }
